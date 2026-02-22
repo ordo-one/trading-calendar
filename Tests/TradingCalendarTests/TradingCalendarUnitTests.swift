@@ -154,20 +154,36 @@ struct TradingCalendarUnitTests {
         #expect(!TradingCalendar.isBusinessDay(summerBankHoliday, mic: .XEUE, underlyingMIC: .XLON), "Closed due to UK underlying")
     }
 
+    @Test("XEUE with US underlying ignores XEUE Labour Day")
+    func xeueWithUSUnderlying() {
+        // May 1, 2025 is Labour Day — XEUE is closed, but XNYS is open.
+        // The underlying moves, so this IS a volatility day.
+        let labourDay = CalendarDate(year: 2_025, month: 5, day: 1)!
+        #expect(!TradingCalendar.isBusinessDay(labourDay, mic: .XEUE), "XEUE alone is closed on Labour Day")
+        #expect(TradingCalendar.isBusinessDay(labourDay, mic: .XNYS), "XNYS is open on May 1")
+        #expect(TradingCalendar.isBusinessDay(labourDay, mic: .XEUE, underlyingMIC: .XNYS), "Underlying is open — volatility day")
+        #expect(TradingCalendar.nonBusinessDayReason(labourDay, mic: .XEUE, underlyingMIC: .XNYS) == .businessDay)
+    }
+
     @Test("Cross-market: Swedish derivative with Finnish underlying")
     func swedishDerivativeFinnishUnderlying() {
         // Finnish Independence Day: Dec 6, 2024 (Friday) — closed in Finland, open in Sweden
+        // With underlyingMIC, the underlying's calendar is used exclusively:
+        // the underlying doesn't move, so this is NOT a volatility day.
         let finnishIndependenceDay = CalendarDate(year: 2_024, month: 12, day: 6)!
         #expect(TradingCalendar.isBusinessDay(finnishIndependenceDay, mic: .XSTO), "Sweden is open on Dec 6")
         #expect(!TradingCalendar.isBusinessDay(finnishIndependenceDay, mic: .XHEL), "Finland is closed on Dec 6")
-        #expect(!TradingCalendar.isBusinessDay(finnishIndependenceDay, mic: .XSTO, underlyingMIC: .XHEL), "Closed due to Finnish underlying")
+        #expect(!TradingCalendar.isBusinessDay(finnishIndependenceDay, mic: .XSTO, underlyingMIC: .XHEL), "Underlying is closed")
         #expect(TradingCalendar.nonBusinessDayReason(finnishIndependenceDay, mic: .XSTO, underlyingMIC: .XHEL) == .holiday(name: "Independence Day"))
 
         // Swedish National Day 2024: June 6 (Thursday) — closed in Sweden, open in Finland
+        // The derivative exchange (XSTO) is closed, but the underlying (XHEL) is open —
+        // the underlying IS moving, so this IS a volatility day.
         let nationalDay = CalendarDate(year: 2_024, month: 6, day: 6)!
         #expect(!TradingCalendar.isBusinessDay(nationalDay, mic: .XSTO), "Sweden is closed on National Day")
         #expect(TradingCalendar.isBusinessDay(nationalDay, mic: .XHEL), "Finland is open on Swedish National Day")
-        #expect(TradingCalendar.nonBusinessDayReason(nationalDay, mic: .XSTO, underlyingMIC: .XHEL) == .holiday(name: "National Day of Sweden"))
+        #expect(TradingCalendar.isBusinessDay(nationalDay, mic: .XSTO, underlyingMIC: .XHEL), "Underlying is open — volatility day")
+        #expect(TradingCalendar.nonBusinessDayReason(nationalDay, mic: .XSTO, underlyingMIC: .XHEL) == .businessDay)
     }
 
     @Test("underlyingMIC with same country is a no-op")

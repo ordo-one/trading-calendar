@@ -117,12 +117,14 @@ public enum TradingCalendar {
     public static func isBusinessDay(_ date: CalendarDate, mic: MIC? = nil, underlyingMIC: MIC? = nil) -> Bool {
         guard date.isWeekday else { return false }
 
-        if let mic, isMarketClosed(date, mic: mic) {
-            return false
+        // When underlyingMIC is provided, use the underlying's calendar exclusively.
+        // This answers "does the underlying move today?" — the relevant question
+        // for option pricing and volatility day counting.
+        if let underlyingMIC, !sharesClosureRules(mic, underlyingMIC) {
+            return !isMarketClosed(date, mic: underlyingMIC)
         }
 
-        if let underlyingMIC, !sharesClosureRules(mic, underlyingMIC),
-           isMarketClosed(date, mic: underlyingMIC) {
+        if let mic, isMarketClosed(date, mic: mic) {
             return false
         }
 
@@ -133,16 +135,21 @@ public enum TradingCalendar {
     /// - Parameters:
     ///   - date: The date to check
     ///   - mic: Optional MIC code for market-specific closures
-    ///   - underlyingMIC: Optional MIC code for the underlying asset's market
+    ///   - underlyingMIC: Optional MIC code for the underlying asset's market.
+    ///     When provided, the underlying's calendar is used exclusively (the derivative
+    ///     exchange's own holidays are ignored).
     public static func nonBusinessDayReason(_ date: CalendarDate, mic: MIC?, underlyingMIC: MIC? = nil) -> NonBusinessDayReason {
         guard date.isWeekday else { return .weekend }
 
-        if let mic, let name = findHolidayName(date, mic: mic) {
-            return .holiday(name: name)
+        // When underlyingMIC is provided, use the underlying's calendar exclusively.
+        if let underlyingMIC, !sharesClosureRules(mic, underlyingMIC) {
+            if let name = findHolidayName(date, mic: underlyingMIC) {
+                return .holiday(name: name)
+            }
+            return .businessDay
         }
 
-        if let underlyingMIC, !sharesClosureRules(mic, underlyingMIC),
-           let name = findHolidayName(date, mic: underlyingMIC) {
+        if let mic, let name = findHolidayName(date, mic: mic) {
             return .holiday(name: name)
         }
 
