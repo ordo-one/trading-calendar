@@ -38,7 +38,7 @@ let benchmarks: @Sendable () -> Void = {
     Benchmark("isBusinessDay_noMIC",
               closure: { benchmark in
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.isBusinessDay(sampleWeekday))
+                      Benchmark.blackHole(Market.isBusinessDay(sampleWeekday))
                   }
               } as Benchmark.BenchmarkClosure)
 
@@ -46,17 +46,17 @@ let benchmarks: @Sendable () -> Void = {
 
     Benchmark("isBusinessDay_XNYS",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.isBusinessDay(sampleWeekday, mic: .XNYS))
+                      Benchmark.blackHole(Market.isBusinessDay(sampleWeekday, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
     Benchmark("isBusinessDay_XSTO",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.isBusinessDay(sampleWeekday, mic: .XSTO))
+                      Benchmark.blackHole(Market.isBusinessDay(sampleWeekday, mic: .XSTO))
                   }
               } as Benchmark.BenchmarkClosure)
 
@@ -64,17 +64,17 @@ let benchmarks: @Sendable () -> Void = {
 
     Benchmark("nonBusinessDayReason_weekday",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.nonBusinessDayReason(sampleWeekday, mic: .XNYS))
+                      Benchmark.blackHole(Market.nonBusinessDayReason(sampleWeekday, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
     Benchmark("nonBusinessDayReason_holiday",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.nonBusinessDayReason(sampleHoliday, mic: .XNYS))
+                      Benchmark.blackHole(Market.nonBusinessDayReason(sampleHoliday, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
@@ -83,23 +83,23 @@ let benchmarks: @Sendable () -> Void = {
     Benchmark("businessDayCount_quarter_noMIC",
               closure: { benchmark in
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.businessDayCount(from: quarterStart, to: quarterEnd))
+                      Benchmark.blackHole(Market.businessDayCount(from: quarterStart, to: quarterEnd))
                   }
               } as Benchmark.BenchmarkClosure)
 
     Benchmark("businessDayCount_quarter_XNYS",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.businessDayCount(from: quarterStart, to: quarterEnd, mic: .XNYS))
+                      Benchmark.blackHole(Market.businessDayCount(from: quarterStart, to: quarterEnd, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
     Benchmark("businessDayCount_year_XSTO",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.businessDayCount(from: rangeStart, to: rangeEnd, mic: .XSTO))
+                      Benchmark.blackHole(Market.businessDayCount(from: rangeStart, to: rangeEnd, mic: .XSTO))
                   }
               } as Benchmark.BenchmarkClosure)
 
@@ -107,33 +107,33 @@ let benchmarks: @Sendable () -> Void = {
 
     Benchmark("previousBusinessDay_XNYS",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.previousBusinessDay(from: sampleWeekday, mic: .XNYS))
+                      Benchmark.blackHole(Market.previousBusinessDay(from: sampleWeekday, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
     Benchmark("nextBusinessDay_XNYS",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.nextBusinessDay(from: sampleWeekday, mic: .XNYS))
+                      Benchmark.blackHole(Market.nextBusinessDay(from: sampleWeekday, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
     Benchmark("addBusinessDays_3_XNYS",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.addBusinessDays(3, from: sampleWeekday, mic: .XNYS))
+                      Benchmark.blackHole(Market.addBusinessDays(3, from: sampleWeekday, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
     Benchmark("addBusinessDays_10_XSTO",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.addBusinessDays(10, from: sampleWeekday, mic: .XSTO))
+                      Benchmark.blackHole(Market.addBusinessDays(10, from: sampleWeekday, mic: .XSTO))
                   }
               } as Benchmark.BenchmarkClosure)
 
@@ -141,9 +141,9 @@ let benchmarks: @Sendable () -> Void = {
 
     Benchmark("allBusinessDays_quarter_XNYS",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.allBusinessDays(from: quarterStart, to: quarterEnd, mic: .XNYS))
+                      Benchmark.blackHole(Market.allBusinessDays(from: quarterStart, to: quarterEnd, mic: .XNYS))
                   }
               } as Benchmark.BenchmarkClosure)
 
@@ -151,9 +151,9 @@ let benchmarks: @Sendable () -> Void = {
 
     Benchmark("prewarmCache_alreadyWarmed",
               closure: { benchmark in
-                  TradingCalendar.prewarmCache()
+                  Market.prewarmCache()
                   for _ in benchmark.scaledIterations {
-                      Benchmark.blackHole(TradingCalendar.prewarmCache())
+                      Benchmark.blackHole(Market.prewarmCache())
                   }
               } as Benchmark.BenchmarkClosure)
 }

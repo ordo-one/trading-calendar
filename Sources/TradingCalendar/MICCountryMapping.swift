@@ -1,4 +1,4 @@
-extension TradingCalendar {
+extension Market {
     /// Derives country from MIC code patterns
     static func countryFromMIC(_ mic: MIC) -> Country? {
         let micStr = mic.code

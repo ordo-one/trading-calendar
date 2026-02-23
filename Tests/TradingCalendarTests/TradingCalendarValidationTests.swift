@@ -179,7 +179,7 @@ struct TradingCalendarValidationTests {
         var currentDate = startDate
         while currentDate <= endDate {
             let isYahooTradingDay = yahooTradingDates.contains(currentDate)
-            let isCalendarBusinessDay = TradingCalendar.isBusinessDay(currentDate, mic: mic)
+            let isCalendarBusinessDay = Market.isBusinessDay(currentDate, mic: mic)
 
             if isYahooTradingDay && !isCalendarBusinessDay {
                 discrepancies.append(Discrepancy(

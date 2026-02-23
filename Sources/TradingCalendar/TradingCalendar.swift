@@ -9,7 +9,7 @@ public enum NonBusinessDayReason: Equatable, Sendable {
 }
 
 /// Utility for working with business days and market trading closures
-public enum TradingCalendar {
+public enum Market {
     // MARK: - Market Closure Cache
 
     private struct CacheKey: Hashable, Sendable {
